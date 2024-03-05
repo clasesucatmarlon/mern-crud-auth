@@ -31,6 +31,7 @@ http://localhost/api/login
 ```
 http://localhost/api/logout
 
+
     body:
       Nothing
 ```
