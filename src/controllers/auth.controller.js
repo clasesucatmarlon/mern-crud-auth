@@ -54,12 +54,12 @@ export const login = async (req, res) => {
   try {
     const userFound = await User.findOne({ email });
     if (!userFound) {
-      res.status(400).json({ message: "User not found" });
+      return res.status(400).json(["User not found" ]);
     }
 
     const isMatch = await bcrypt.compare(password, userFound.password);
     if (!isMatch) {
-      res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json(["Invalid credentials"]);
     }
 
     // GENERAR TOKEN
