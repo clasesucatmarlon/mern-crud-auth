@@ -1,15 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
 const RegisterPage = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const { signup, user, isAuthenticated, authError } = useAuth();
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-  console.log("Usuario: ", user)
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { signup, isAuthenticated, authError } = useAuth();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -22,10 +25,15 @@ const RegisterPage = () => {
     await signup(values);
   });
 
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="flex h-screen justify-center items-center">
-      <div className="bg-zinc-800 max-w-md rounded-md p-10">
-      <p className="mb-5 text-center text-2xl">Register</p>
+      <div className="bg-zinc-800 rounded-md p-10 md:w-1/3">
+        <p className="mb-5 text-center text-2xl">Register</p>
         {
           authError.map((error, index) => {
             return (
@@ -53,15 +61,22 @@ const RegisterPage = () => {
             placeholder="Email"
             className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
           />
+
           {
             errors.email && <p className="text-red-500">Email is required</p>
           }
-          <input
-            type="password"
-            {...register("password", { required: true })}
-            placeholder="Password"
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-          />
+
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              {...register("password", { required: true })}
+              placeholder="Password"
+              className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+            />
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} onClick={togglePasswordVisibility} />
+            </span>
+          </div>
           {
             errors.password && <p className="text-red-500">Password is required</p>
           }
@@ -73,7 +88,7 @@ const RegisterPage = () => {
           Already have an account? <Link to="/login" className="text-sky-500">Sign in</Link>
         </p>
       </div>
-    </div>
+    </div >
   )
 }
 
